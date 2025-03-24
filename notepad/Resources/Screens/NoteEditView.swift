@@ -9,6 +9,7 @@ struct NoteEditView: View {
     @Query(filter: #Predicate<Category> { $0.name == "默认分类" }) private var defaultCategory: [Category]
     @Query private var tags: [Tag]
     @Bindable var note: Note
+    @StateObject private var inputHandler = InputHandler()
     
     @State private var title: String
     @State private var content: String
@@ -51,6 +52,10 @@ struct NoteEditView: View {
                     .textInputAutocapitalization(.never)
                     .onChange(of: title) { _, _ in
                         hasChanges = true
+                        inputHandler.handleTextChange(title)
+                    }
+                    .onSubmit {
+                        inputHandler.handleInputEnd()
                     }
             }
             .padding()
@@ -65,6 +70,10 @@ struct NoteEditView: View {
                         .focused($isEditing)
                         .onChange(of: content) { _, _ in
                             hasChanges = true
+                            inputHandler.handleTextChange(content)
+                        }
+                        .onSubmit {
+                            inputHandler.handleInputEnd()
                         }
                     
                     if !note.images.isEmpty {
@@ -284,12 +293,16 @@ struct NoteEditView: View {
             Text("确定要删除这个笔记吗？此操作不可撤销。")
         }
         .onAppear {
+            inputHandler.handleInputBegin()
             if let categoryID = note.categoryID {
                 selectedCategory = categories.first(where: { $0.id == categoryID })
             } else if isNewNote, let defaultCat = defaultCategory.first {
                 selectedCategory = defaultCat
                 note.categoryID = defaultCat.id
             }
+        }
+        .onDisappear {
+            inputHandler.handleInputEnd()
         }
         .onChange(of: selectedImage) { oldValue, newImage in
             if let newImage = newImage,
@@ -317,9 +330,14 @@ struct NoteEditView: View {
             }
             .disabled(fontSize >= 24)
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal)
-        .background(.bar)
+        .padding()
+        .background(Color(.systemBackground))
+        .overlay(
+            Rectangle()
+                .frame(height: 1)
+                .foregroundColor(Color(.separator)),
+            alignment: .top
+        )
     }
     
     private func saveNote() {

@@ -11,6 +11,7 @@ import SwiftData
 @main
 struct notepadApp: App {
     let container: ModelContainer
+    @StateObject private var noteViewModel: NoteViewModel
     
     init() {
         do {
@@ -28,26 +29,22 @@ struct notepadApp: App {
             )
             
             // 简化容器创建
-            container = try ModelContainer(
+            let tempContainer = try ModelContainer(
                 for: schema,
                 configurations: modelConfiguration
             )
             
+            // 初始化属性
+            self.container = tempContainer
+            let viewModel = NoteViewModel(modelContext: tempContainer.mainContext)
+            self._noteViewModel = StateObject(wrappedValue: viewModel)
+            
             // 创建默认分类
-            createDefaultCategoryIfNeeded()
-        } catch {
-            print("SwiftData初始化错误：\(error)")
-            fatalError("无法初始化SwiftData容器")
-        }
-    }
-    
-    private func createDefaultCategoryIfNeeded() {
-        let context = container.mainContext
-        let fetchDescriptor = FetchDescriptor<Category>(
-            predicate: #Predicate<Category> { $0.name == "默认分类" }
-        )
-        
-        do {
+            let context = tempContainer.mainContext
+            let fetchDescriptor = FetchDescriptor<Category>(
+                predicate: #Predicate<Category> { $0.name == "默认分类" }
+            )
+            
             let existingCategories = try context.fetch(fetchDescriptor)
             if existingCategories.isEmpty {
                 let defaultCategory = Category(name: "默认分类")
@@ -55,13 +52,15 @@ struct notepadApp: App {
                 try context.save()
             }
         } catch {
-            print("创建默认分类时出错：\(error)")
+            print("SwiftData初始化错误：\(error)")
+            fatalError("无法初始化SwiftData容器")
         }
     }
     
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(noteViewModel)
         }
         .modelContainer(container)
     }

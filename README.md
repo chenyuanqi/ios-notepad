@@ -1,50 +1,75 @@
-# 记事本 App
+# Notepad iOS App
 
-一个简洁优雅的iOS记事本应用，基于SwiftUI和SwiftData开发。
-
-## 功能特点
-
-- 创建、编辑和删除笔记
-- 实时自动保存
-- 优雅的用户界面设计
-- 支持文本格式化
-- 本地数据持久化存储
-- 支持iOS 16及以上版本
-
-## 技术架构
-
-- 开发语言：Swift 5.9
-- UI框架：SwiftUI
-- 数据持久化：SwiftData
-- 最低支持版本：iOS 16.0
-- 设计模式：MVVM
+一个简洁优雅的iOS笔记应用，使用SwiftUI开发。
 
 ## 项目结构
 
 ```
 notepad/
-├── Models/        # 数据模型
-├── Views/         # UI视图
-├── ViewModels/    # 视图模型
-└── Utilities/     # 工具类
+├── Models/           # 数据模型
+│   └── Note.swift    # 笔记数据模型
+├── ViewModels/       # 视图模型
+│   └── NoteViewModel.swift  # 笔记业务逻辑
+├── Views/           # 视图
+│   └── Components/  # 可复用组件
+│       └── AppIcon.swift
+├── Resources/       # 资源文件
+│   ├── Components/  # UI组件
+│   └── Screens/     # 页面视图
+│       ├── ContentView.swift
+│       └── NoteEditView.swift
+├── Services/        # 服务层
+│   ├── StorageService.swift
+│   └── NotificationManager.swift
+├── Utilities/       # 工具类
+│   ├── IconExporter.swift
+│   └── ImagePicker.swift
+└── Constants/       # 常量配置
+    ├── Theme.swift
+    └── Constants.swift
 ```
+
+## 功能特性
+
+- 创建、编辑、删除笔记
+- 支持富文本编辑
+- 笔记分类管理
+- 标签系统
+- 本地通知提醒
+- 自定义应用图标
+
+## 技术栈
+
+- SwiftUI
+- Combine
+- SwiftData
+- UserNotifications
 
 ## 开发环境要求
 
+- iOS 17.0+
 - Xcode 15.0+
-- iOS 16.0+
 - Swift 5.9+
 
-## 如何运行
+## 安装说明
 
-1. 克隆项目到本地
-2. 使用Xcode打开notepad.xcodeproj
-3. 选择目标设备或模拟器
-4. 点击运行按钮或按Command+R
+1. 克隆项目
+2. 打开 `notepad.xcodeproj`
+3. 选择目标设备
+4. 点击运行按钮
 
-## 开发规范
+## 使用说明
 
-- 使用SwiftUI构建用户界面
-- 遵循MVVM架构模式
-- 使用SwiftData进行数据持久化
-- 代码注释完整，遵循Swift API设计规范
+1. 主界面显示所有笔记列表
+2. 点击右上角"+"按钮创建新笔记
+3. 点击笔记进入编辑界面
+4. 在编辑界面可以设置提醒时间
+5. 支持添加标签和分类
+
+## 贡献指南
+
+欢迎提交Issue和Pull Request来帮助改进这个项目。
+
+## 许可证
+
+本项目采用 MIT 许可证。

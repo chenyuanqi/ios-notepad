@@ -2,6 +2,37 @@ import Foundation
 import SwiftData
 import SwiftUI
 
+// 用于JSON序列化的Note模型
+struct NoteJSON: Codable {
+    let id: String
+    let title: String
+    let content: String
+    let categoryID: String?
+    let tagIDs: [String]
+    let isPinned: Bool
+    let images: [Data]
+    let imageDescriptions: [String]
+    let reminder: Date?
+    let isReminderActive: Bool
+    let createdAt: Date
+    let updatedAt: Date
+    
+    init(from note: Note) {
+        self.id = note.id
+        self.title = note.title
+        self.content = note.content
+        self.categoryID = note.categoryID
+        self.tagIDs = note.tagIDs
+        self.isPinned = note.isPinned
+        self.images = note.images
+        self.imageDescriptions = note.imageDescriptions
+        self.reminder = note.reminder
+        self.isReminderActive = note.isReminderActive
+        self.createdAt = note.createdAt
+        self.updatedAt = note.updatedAt
+    }
+}
+
 @Model
 final class Note {
     @Attribute(.unique) var id: String
